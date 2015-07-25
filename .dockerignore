@@ -1,1 +1,3 @@
 .git
+_vendor
+etcd-netfw

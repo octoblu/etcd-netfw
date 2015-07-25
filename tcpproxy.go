@@ -5,7 +5,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"time"
 	"github.com/golang/glog"
 )
 
@@ -48,15 +47,19 @@ func forward(local net.Conn, remoteAddr string) {
 	}
 
 	localTCP := local.(*net.TCPConn)
-	localTCP.SetKeepAlivePeriod(300 * time.Second)
-	localTCP.SetKeepAlive(true)
-
 	remoteTCP := remote.(*net.TCPConn)
-	remoteTCP.SetKeepAlivePeriod(300 * time.Second)
-	remoteTCP.SetKeepAlive(true)
 
-	go io.Copy(localTCP, remoteTCP)
-	go io.Copy(remoteTCP, localTCP)
+	go copy(localTCP, remoteTCP)
+	go copy(remoteTCP, localTCP)
+}
+
+func copy(dst, src *net.TCPConn) {
+  _,err := io.Copy(dst, src)
+
+	if err != nil {
+		dst.Close()
+		src.Close()
+	}
 }
 
 func die(s string, a ...interface{}) {

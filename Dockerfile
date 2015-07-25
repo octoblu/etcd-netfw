@@ -6,9 +6,13 @@ WORKDIR /go/src/app
 
 RUN go get github.com/mattn/gom
 
-COPY . /usr/local/go/src/github.com/octoblu/etcd-netfw
+RUN mkdir -p /usr/local/go/src/github.com/octoblu/etcd-netfw
 WORKDIR /usr/local/go/src/github.com/octoblu/etcd-netfw
+
+COPY Gomfile /usr/local/go/src/github.com/octoblu/etcd-netfw/
 RUN gom install
+
+COPY . /usr/local/go/src/github.com/octoblu/etcd-netfw
 RUN gom test
 RUN gom build
 
