@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"net"
 	"os"
 	"github.com/golang/glog"
@@ -53,13 +52,11 @@ func forward(local net.Conn, remoteAddr string) {
 	go copy(remoteTCP, localTCP)
 }
 
-func copy(dst, src *net.TCPConn) {
-  _,err := io.Copy(dst, src)
 
-	if err != nil {
-		dst.Close()
-		src.Close()
-	}
+func copy(dst, src *net.TCPConn) {
+	dst.ReadFrom(src)
+	src.Close()
+	dst.Close()
 }
 
 func die(s string, a ...interface{}) {
